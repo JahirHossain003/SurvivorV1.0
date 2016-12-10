@@ -1,0 +1,19 @@
+﻿using UnityEngine;
+using System.Collections;
+
+public class EnemyShip : MonoBehaviour {
+
+	public float health = 150f;
+
+	void OnTriggerEnter2D(Collider2D col) {
+		Projectile missile = col.gameObject.GetComponent<Projectile>();
+
+		if(missile){
+			health -= missile.GetDamage();
+			missile.Hit();
+			if(health <= 0){
+				Destroy(gameObject);
+			}
+		}
+	}
+}
