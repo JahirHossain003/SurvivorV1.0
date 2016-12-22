@@ -8,6 +8,16 @@ public class EnemyShip : MonoBehaviour {
 	public float projectileSpeed = -10f;
 	public float shotsPerSec = .5f; 
 
+	public int scoreValue = 150;
+	public AudioClip fireSound;
+	public AudioClip deathSound;
+
+	private ScoreKeeper scoreKeeper; 
+
+	void Start(){
+		scoreKeeper = GameObject.Find("Score").GetComponent<ScoreKeeper>();
+	}
+
 	void Update(){
 		float probability = shotsPerSec * Time.deltaTime;
 		if(Random.value < probability){
@@ -19,6 +29,7 @@ public class EnemyShip : MonoBehaviour {
 		Vector3 startPosition = transform.position + new Vector3(0,-1f,0);
 		GameObject messile = Instantiate(enemyFire,startPosition,Quaternion.identity) as GameObject;
 		messile.rigidbody2D.velocity = new Vector2(0,-projectileSpeed);
+		AudioSource.PlayClipAtPoint(fireSound,transform.position);
 	}
 	
 	void OnTriggerEnter2D(Collider2D col) {
@@ -28,7 +39,9 @@ public class EnemyShip : MonoBehaviour {
 			health -= missile.GetDamage();
 			missile.Hit();
 			if(health <= 0){
+				AudioSource.PlayClipAtPoint(deathSound,transform.position);
 				Destroy(gameObject);
+				scoreKeeper.Score(scoreValue);
 			}
 		}
 	}
